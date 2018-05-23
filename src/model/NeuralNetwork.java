@@ -110,6 +110,7 @@ public class NeuralNetwork {
         //adjust the bias by delta which is gradient
         this.outputBias.add(gradientsOutput);
 
+
         //computing hidden error
         Matrix hiddenErrors = multiply(Matrix.transpose(hiddenOutput), outputErrors);
 
