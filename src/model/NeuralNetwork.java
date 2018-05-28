@@ -59,9 +59,9 @@ public class NeuralNetwork {
 
     }
 
-    public double[] feedForward(double[] input) {
+    public double[] feedForward(double[] inputData) {
 
-        Matrix inputs = Matrix.fromArray(input);
+        Matrix inputs = Matrix.fromArray(inputData);
 
         //generating the hidden layer
         Matrix hidden = multiply(inputHidden, inputs);
@@ -73,6 +73,9 @@ public class NeuralNetwork {
         Matrix output = multiply(hiddenOutput, hidden);
         output.add(outputBias);
         output = Matrix.sigmoid(output);
+
+        output.print();
+        System.out.println(output.getRows() + "x" + output.getCols());
 
         return output.toArray();
     }

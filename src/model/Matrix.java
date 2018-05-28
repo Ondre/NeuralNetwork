@@ -10,6 +10,13 @@ public class Matrix {
     private int rows;
     private int cols;
 
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
 
     public Matrix(int rows, int cols){
      this.rows = rows;
@@ -28,9 +35,7 @@ public class Matrix {
 
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
-
                     result.data[i][j] = learningRate * this.data[i][j];
-
             }
         }
         return result;
@@ -85,7 +90,7 @@ public class Matrix {
 
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
-                result[this.rows * i + j] = this.data[i][j];
+                result[this.cols * i + j] = this.data[i][j];
             }
         }
 
@@ -123,8 +128,9 @@ public class Matrix {
     }
 
     public void add(Matrix m) {
-        for (int i = 0; i < m.rows; i++) {
-            for (int j = 0; j < m.cols; j++) {
+        if (null != m && this.rows == m.rows && this.cols == m.cols)
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
                 this.data[i][j] += m.data[i][j];
             }
         }
