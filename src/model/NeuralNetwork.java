@@ -59,7 +59,7 @@ public class NeuralNetwork {
 
     }
 
-    public double[] feedForward(double[] inputData) {
+    public double[] guess(double[] inputData) {
 
         Matrix inputs = Matrix.fromArray(inputData);
 
@@ -74,23 +74,21 @@ public class NeuralNetwork {
         output.add(outputBias);
         output = Matrix.sigmoid(output);
 
-        output.print();
-        System.out.println(output.getRows() + "x" + output.getCols());
-
         return output.toArray();
     }
 
     public void train(double[] inputsData, double[] targetsData){
+
         Matrix inputs = Matrix.fromArray(inputsData);
 
         //generating the hidden layer
-        Matrix hidden = multiply(inputHidden, inputs);
-        hidden.add(hiddenBias);
+        Matrix hiddens = multiply(inputHidden, inputs);
+        hiddens.add(hiddenBias);
         //activation function
-        hidden = Matrix.sigmoid(hidden);
+        hiddens = Matrix.sigmoid(hiddens);
 
         //generating the output layer
-        Matrix outputs = Matrix.multiply(hiddenOutput, hidden);
+        Matrix outputs = Matrix.multiply(hiddenOutput, hiddens);
         outputs.add(outputBias);
         outputs = Matrix.sigmoid(outputs);
 
@@ -105,7 +103,7 @@ public class NeuralNetwork {
         gradientsOutput.multiply(this.learningRate);
 
         //calculate hidden->output deltas
-        Matrix hiddenOutputT = Matrix.transpose(hidden);
+        Matrix hiddenOutputT = Matrix.transpose(hiddens);
         Matrix weightsDeltasHO = Matrix.multiply(gradientsOutput, hiddenOutputT);
 
         //adjust weights of hidden->output
@@ -118,7 +116,7 @@ public class NeuralNetwork {
         Matrix hiddenErrors = multiply(Matrix.transpose(hiddenOutput), outputErrors);
 
         //calculate gradients for input->hidden weigths
-        Matrix gradientsHidden = Matrix.dsigmoid(hidden);
+        Matrix gradientsHidden = Matrix.dsigmoid(hiddens);
         gradientsHidden = Matrix.multiplyHadamard(gradientsHidden, hiddenErrors);
         gradientsHidden.multiply(this.learningRate);
 
