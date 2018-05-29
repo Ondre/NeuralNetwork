@@ -1,5 +1,6 @@
 import model.NeuralNetwork;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -22,25 +23,36 @@ public class Main {
                         {{0, 0, 0}, {0, 1, 0}},
                 };
 
+        double errorThreshold = 0.01;
+
         long f = System.currentTimeMillis();
 
         // init nn
         NeuralNetwork nn = new NeuralNetwork(3, 3, 3);
-        nn.setLearningRate(.01);
+        nn.setLearningRate(.1);
         nn.setHiddenBias(-1, 1);
 
         // learning nn using teachingData 3D array with inputs and preferred outputs
         for (int j = 0; j < 5; j++) {
+
+            double cumulativeError = 1;
+
             for (int i = 0; i < 50000; i++) {
 
                 int pick = rnd.nextInt(teachingData.length);
-                nn.train(teachingData[pick][0], teachingData[pick][1]);
+                cumulativeError = nn.train(teachingData[pick][0], teachingData[pick][1]);
+
+                if (cumulativeError < errorThreshold) {
+                    System.out.println("Result iteration : " + ((j * i) + i));
+                    break;
+                }
 
             }
+                if (cumulativeError < errorThreshold) break;
         }
 
 
-        //print out result  
+        //print out result
         System.out.println("Target - {1 ,0 ,0}, Guess: " + roundAndStringify(nn.guess(new double[]{1, 1, 0})));
         System.out.println("Target - {1 ,0 ,0}, Guess: " + roundAndStringify(nn.guess(new double[]{1, 0, 0})));
         System.out.println("Target - {0 ,1 ,0}, Guess: " + roundAndStringify(nn.guess(new double[]{0, 1, 1})));

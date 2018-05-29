@@ -77,7 +77,7 @@ public class NeuralNetwork {
         return output.toArray();
     }
 
-    public void train(double[] inputsData, double[] targetsData){
+    public double train(double[] inputsData, double[] targetsData){
 
         Matrix inputs = Matrix.fromArray(inputsData);
 
@@ -94,11 +94,25 @@ public class NeuralNetwork {
 
         Matrix targets = Matrix.fromArray(targetsData);
 
+
+
+
+
+
         //computing output error
         Matrix outputErrors = Matrix.subtract(targets,outputs);
 
+        double cumulativeError = 0;
+
+        double[] errors = outputErrors.toArray();
+
+        for (int i = 0; i < outputErrors.toArray().length; i++) {
+            cumulativeError += Math.abs(errors[i]);
+        }
+
         // calculate gradient for hidden->output weights
         Matrix gradientsOutput = Matrix.dsigmoid(outputs);
+
         gradientsOutput = Matrix.multiplyHadamard(gradientsOutput, outputErrors);
         gradientsOutput.multiply(this.learningRate);
 
@@ -110,7 +124,6 @@ public class NeuralNetwork {
         this.hiddenOutput.add(weightsDeltasHO);
         //adjust the bias by delta which is gradient
         this.outputBias.add(gradientsOutput);
-
 
         //computing hidden error
         Matrix hiddenErrors = multiply(Matrix.transpose(hiddenOutput), outputErrors);
@@ -129,7 +142,7 @@ public class NeuralNetwork {
         //adjust the bias by delta which is gradient
         this.hiddenBias.add(gradientsHidden);
 
-
+        return cumulativeError/3;
     }
 
 
