@@ -1,8 +1,11 @@
 package model;
 
+import java.util.Random;
+
 import static model.Matrix.multiply;
 
 public class NeuralNetwork {
+    private Random rnd = new Random();
 
     //weights
     private Matrix inputHidden;
@@ -15,17 +18,13 @@ public class NeuralNetwork {
         return hiddenBias;
     }
 
-    public void setHiddenBias(double from, double to) {
+    public void setBiasInitialRange(double from, double to) {
         hiddenBias.randomize(from, to);
         outputBias.randomize(from, to);
     }
 
     public Matrix getOutputBias() {
         return outputBias;
-    }
-
-    public void setOutputBias(Matrix outputBias) {
-        this.outputBias = outputBias;
     }
 
     private Matrix outputBias;
@@ -77,6 +76,34 @@ public class NeuralNetwork {
         return output.toArray();
     }
 
+    public void train(double[][][] teachingData){
+        this.train(teachingData, 0.01);
+    }
+
+    public void train(double[][][] teachingData, double errorThreshold) {
+
+        double cumulativeError = 1;
+
+        boolean isErrorStableLow = false;
+        int counter = 0;
+        int stabilityThreshold = 100;
+        int iterations = 0;
+
+        while (!(cumulativeError < errorThreshold && isErrorStableLow)) {
+
+            iterations++;
+            if (cumulativeError < errorThreshold) counter++;
+            else counter = 0;
+
+            if (counter >= stabilityThreshold) isErrorStableLow = true;
+
+            int pick = rnd.nextInt(teachingData.length);
+            cumulativeError = this.train(teachingData[pick][0], teachingData[pick][1]);
+        }
+
+        System.out.println("iterations = " + iterations);
+    }
+
     public double train(double[] inputsData, double[] targetsData){
 
         Matrix inputs = Matrix.fromArray(inputsData);
@@ -93,10 +120,6 @@ public class NeuralNetwork {
         outputs = Matrix.sigmoid(outputs);
 
         Matrix targets = Matrix.fromArray(targetsData);
-
-
-
-
 
 
         //computing output error
